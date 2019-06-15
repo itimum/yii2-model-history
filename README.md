@@ -21,6 +21,12 @@ or add
 
 to the require section of your `composer.json` file.
 
+Migration
+----
+
+```
+php yii migrate --migrationPath=@vendor/itimum/yii2-model-history/src/migrations
+```
 
 Usage
 -----
@@ -28,4 +34,11 @@ Usage
 Once the extension is installed, simply use it in your code by  :
 
 ```php
-<?= \itimum\modelHistory\AutoloadExample::widget(); ?>```
+public function behaviors() {
+    return [
+        [
+            'class' => itimum\modelHistory\ModelHistoryBehavior::class
+        ]
+    ];
+}
+```
