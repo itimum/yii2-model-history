@@ -25,7 +25,7 @@ Migration
 ----
 
 ```
-php yii migrate --migrationPath=@vendor/itimum/yii2-model-history/src/migrations
+php yii migrate --migrationPath=@itimum/modelHistory/migrations
 ```
 
 Usage

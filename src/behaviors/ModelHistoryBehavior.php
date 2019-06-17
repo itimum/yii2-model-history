@@ -2,6 +2,7 @@
 
 namespace itimum\modelHistory\behaviors;
 
+use itimum\modelHistory\events\HistoryRecordEvent;
 use itimum\modelHistory\models\ModelHistory;
 use itimum\modelHistory\models\ModelHistoryFields;
 use yii\base\Behavior;
@@ -16,8 +17,11 @@ use yii\db\ActiveRecord;
  */
 class ModelHistoryBehavior extends Behavior {
 
-    protected $_historyModel = ModelHistory::class;
-    protected $_historyFieldsModel = ModelHistoryFields::class;
+    const EVENT_BEFORE_HISTORY_RECORD = 'beforeHistoryRecord';
+    const EVENT_AFTER_HISTORY_RECORD = 'afterHistoryRecord';
+
+    protected $_historyClass = ModelHistory::class;
+    protected $_historyFieldsClass = ModelHistoryFields::class;
 
     protected $_historyOldAttributes = [];
 
@@ -183,6 +187,8 @@ class ModelHistoryBehavior extends Behavior {
             if (is_callable($this->beforeHistoryModelSave)) {
                 call_user_func($this->beforeHistoryModelSave, $event, $historyModel);
             }
+            $this->owner->trigger(self::EVENT_BEFORE_HISTORY_RECORD,
+                    new HistoryRecordEvent(['historyModel' => $historyModel]));
 
             $transaction = \Yii::$app->db->beginTransaction();
             try {
@@ -206,6 +212,8 @@ class ModelHistoryBehavior extends Behavior {
             if (is_callable($this->afterHistoryModelSave)) {
                 call_user_func($this->afterHistoryModelSave, $event, $historyModel);
             }
+            $this->owner->trigger(self::EVENT_AFTER_HISTORY_RECORD,
+                    new HistoryRecordEvent(['historyModel' => $historyModel]));
 
         }
     }
@@ -226,7 +234,7 @@ class ModelHistoryBehavior extends Behavior {
      */
     protected function _createHistoryModel() {
 
-        $historyRecord = new $this->_historyModel;
+        $historyRecord = new $this->_historyClass;
 
         $historyRecord->created_by = \yii::$app->user->getId();
         $historyRecord->entity_id = $this->owner->id;
@@ -288,7 +296,7 @@ class ModelHistoryBehavior extends Behavior {
      * @return \yii\db\ActiveQuery
      */
     public function getHistory(){
-        return $this->owner->hasMany($this->_historyModel, [
+        return $this->owner->hasMany($this->_historyClass, [
             'entity_id' => 'id',
         ])->where(['entity' => get_class($this->owner)]);
     }
