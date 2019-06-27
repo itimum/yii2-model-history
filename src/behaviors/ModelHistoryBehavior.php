@@ -81,9 +81,9 @@ class ModelHistoryBehavior extends Behavior {
     protected function _addBeforeListeners() {
         $this->owner->on(ActiveRecord::EVENT_BEFORE_UPDATE, [$this, 'setHistoryOldAttributes']);
 
-        $this->owner->on(ActiveRecord::EVENT_BEFORE_INSERT, [$this, 'setHistoryOldAttributes']);
-
-        $this->owner->on(ActiveRecord::EVENT_BEFORE_DELETE, [$this, 'setHistoryOldAttributes']);
+        // TODO
+        //$this->owner->on(ActiveRecord::EVENT_BEFORE_INSERT, [$this, 'setHistoryOldAttributes']);
+        //$this->owner->on(ActiveRecord::EVENT_BEFORE_DELETE, [$this, 'setHistoryOldAttributes']);
 
         if (is_callable($this->addBeforeListeners)) {
             call_user_func($this->addBeforeListeners);
@@ -96,9 +96,9 @@ class ModelHistoryBehavior extends Behavior {
     protected function _addAfterListeners() {
         $this->owner->on(ActiveRecord::EVENT_AFTER_UPDATE, [$this, 'addHistoryRecord']);
 
-        $this->owner->on(ActiveRecord::EVENT_AFTER_INSERT, [$this, 'addHistoryRecord']);
-
-        $this->owner->on(ActiveRecord::EVENT_AFTER_DELETE, [$this, 'addHistoryRecord']);
+        // TODO
+        //$this->owner->on(ActiveRecord::EVENT_AFTER_INSERT, [$this, 'addHistoryRecord']);
+        //$this->owner->on(ActiveRecord::EVENT_AFTER_DELETE, [$this, 'addHistoryRecord']);
 
         if (is_callable($this->addAfterListeners)) {
             call_user_func($this->addAfterListeners);
